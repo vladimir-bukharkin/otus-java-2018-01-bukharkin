@@ -1,4 +1,4 @@
-# otus-java-2017-11-vladimir-bukharkin
+# otus-java
 
 Группа 2017-11
 
