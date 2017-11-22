@@ -1,4 +1,4 @@
-# otus-java
+# Otus.ru Java developer
 
 Группа 2017-11
 
