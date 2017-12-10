@@ -1,5 +1,7 @@
 package otus;
 
+import java.util.function.Supplier;
+
 public class ObjSizeService {
 
     // Количество прогонов программы
@@ -9,7 +11,7 @@ public class ObjSizeService {
     private final int objsSize = 2_000_000;
 
 
-    public long calculate(ObjCreator objCreator) throws InterruptedException {
+    public long calculate(Supplier<?> obj) throws InterruptedException {
 
         Runtime runtime = Runtime.getRuntime();
 
@@ -17,14 +19,14 @@ public class ObjSizeService {
 
         for (int i = 0; i < repSize; i++) {
 
-            System.gc();
-            Thread.sleep(1000);
-
             Object[] array = new Object[objsSize];
 
             for (int j = 0; j < objsSize; j++) {
-                array[j] = objCreator.createInstance();
+                array[j] = obj.get();
             }
+
+            System.gc();
+            Thread.sleep(1000);
             result += (runtime.totalMemory() - runtime.freeMemory()) / objsSize;
         }
         return result / repSize;
