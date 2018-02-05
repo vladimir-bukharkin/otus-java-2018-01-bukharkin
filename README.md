@@ -1,6 +1,6 @@
 # Otus.ru Java developer
 
-Группа 2017-11
+Группа 2018-01
 
 Vladimir Bukharkin (Владимир Бухаркин)
 
