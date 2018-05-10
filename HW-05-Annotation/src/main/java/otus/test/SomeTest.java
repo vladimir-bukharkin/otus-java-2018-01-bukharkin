@@ -15,24 +15,23 @@ public class SomeTest {
     }
 
     @Test
-    public void testOk() {
+    public void testShouldBeOk() {
         Assert.assertTrue(isBeforeExecuted);
         Assert.assertTrue(true);
     }
 
     @Test
-    public void testFail() {
+    public void testShouldBeFail() {
         Assert.assertFalse(true);
     }
 
     @Test
-    public void testException() {
-//        throw new RuntimeException("Exception");
+    public void testShouldBeException() {
+        throw new RuntimeException("Exception");
     }
 
     @After
     public void tearDown() throws Exception {
         System.out.println("@After executed");
     }
-
 }

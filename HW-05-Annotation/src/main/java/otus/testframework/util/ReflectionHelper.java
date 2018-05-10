@@ -73,11 +73,11 @@ public class ReflectionHelper {
         return null;
     }
 
-    public static Object callMethodForTest(Object object, Method method) {
+    public static Object callMethod(Object object, Method method) throws InvocationTargetException {
         try {
             method.setAccessible(true);
             return method.invoke(object);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (IllegalAccessException e) {
 
         } finally {
             if (method != null) {

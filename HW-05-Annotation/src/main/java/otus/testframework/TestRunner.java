@@ -13,11 +13,11 @@ import java.util.stream.Stream;
 
 public class TestRunner {
 
-    public static void run(String className) throws ClassNotFoundException {
+    public static void run(String className) throws ClassNotFoundException, InvocationTargetException {
         run(Class.forName(className));
     }
 
-    public static void run(Class clazz) {
+    public static void run(Class clazz) throws InvocationTargetException {
         if (isTestAnnotationPresent(clazz)) {
             Method before = null;
             Method after = null;
@@ -25,8 +25,10 @@ public class TestRunner {
 
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(Before.class)) {
+                    if (before != null) throw new RuntimeException("More then one @Before");
                     before = method;
                 } else if (method.isAnnotationPresent(After.class)){
+                    if (after != null) throw new RuntimeException("More then one @After");
                     after = method;
                 } else if (method.isAnnotationPresent(Test.class)) {
                     tests.add(method);
@@ -34,6 +36,7 @@ public class TestRunner {
             }
 
             for (Method testMethod : tests) {
+                System.out.println("Test: " + testMethod.getName() + " started");
                 Object testObject = ReflectionHelper.instantiate(clazz);
                 if (before != null) {
                     ReflectionHelper.callMethod(testObject, before);
@@ -43,6 +46,8 @@ public class TestRunner {
                 if (after != null) {
                     ReflectionHelper.callMethod(testObject, after);
                 }
+                System.out.println("Test: " + testMethod.getName() + " finished");
+                System.out.println("____________________________________________________________");
             }
         }
     }
@@ -50,14 +55,15 @@ public class TestRunner {
     private static void handleTest(Object testObject, Method testMethod) {
         try {
             ReflectionHelper.callMethod(testObject, testMethod);
+            System.out.println("    Test Successful");
         } catch (InvocationTargetException e) {
-            if (e.getTargetException() == AssertionError.class) {
-                System.out.println("test fail");
+            if (e.getTargetException().getClass() == AssertionError.class) {
+                System.out.println("    Test Fail!");
             } else {
-                e.getTargetException();
+                System.out.println("    Test Exception!");
+                e.getTargetException().printStackTrace();
             }
         }
-
     }
 
     private static boolean isTestAnnotationPresent(Class clazz) {
