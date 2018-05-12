@@ -9,7 +9,7 @@ public class SomeTest {
     private boolean isBeforeExecuted = false;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         isBeforeExecuted = true;
         System.out.println("@Before executed");
     }
@@ -22,16 +22,16 @@ public class SomeTest {
 
     @Test
     public void testShouldBeFail() {
-        Assert.assertFalse(true);
+        Assert.fail();
     }
 
     @Test
-    public void testShouldBeException() {
-        throw new RuntimeException("Exception");
+    public void testShouldBeThrowException() {
+        throw new RuntimeException("Test threw exception");
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         System.out.println("@After executed");
     }
 }
