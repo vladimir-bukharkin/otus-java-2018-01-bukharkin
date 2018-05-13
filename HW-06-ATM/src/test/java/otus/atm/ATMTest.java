@@ -3,6 +3,7 @@ package otus.atm;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import otus.atm.exception.ATMException;
 import otus.atm.exception.BillCellException;
 
 public class ATMTest {
@@ -22,7 +23,7 @@ public class ATMTest {
     }
 
     @Test
-    public void addBanknote() {
+    public void addBanknote() throws BillCellException {
         atm.addBanknote(BanknoteDenomination.ONE);
         atm.addBanknote(BanknoteDenomination.ONE);
         Assert.assertEquals(2, atm.getBillCell(BanknoteDenomination.ONE).getBanknoteCount());
@@ -34,7 +35,7 @@ public class ATMTest {
     }
 
     @Test
-    public void withdraw() {
+    public void withdraw() throws BillCellException, ATMException {
         atm.addBanknote(BanknoteDenomination.ONE, 10);
         atm.addBanknote(BanknoteDenomination.FIVE, 10);
         atm.addBanknote(BanknoteDenomination.TEN, 10);
@@ -44,7 +45,7 @@ public class ATMTest {
     }
 
     @Test
-    public void withdrawNegativeAmount() {
+    public void withdrawNegativeAmount() throws BillCellException, ATMException {
         atm.addBanknote(BanknoteDenomination.ONE, 10);
 
         atm.withdraw(-1);

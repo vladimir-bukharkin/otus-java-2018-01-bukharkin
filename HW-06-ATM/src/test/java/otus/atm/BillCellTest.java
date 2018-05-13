@@ -7,7 +7,7 @@ import otus.atm.exception.BillCellException;
 public class BillCellTest {
 
     @Test
-    public void addBanknote() {
+    public void addBanknote() throws BillCellException {
         BillCell billCell = new BillCell(BanknoteDenomination.FIVE);
         billCell.addBanknote();
         Assert.assertEquals(1, billCell.getBanknoteCount());
