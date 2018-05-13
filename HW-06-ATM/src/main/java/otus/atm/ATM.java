@@ -8,11 +8,13 @@ public class ATM {
     private final Map<BanknoteDenomination, Integer> cells = new HashMap<>();
     private final List<BanknoteDenomination> withdrawOrder = new ArrayList<>();
 
+    private final Object lock = new Object();
+
     public ATM() {
         initBillCells();
     }
 
-    void addBanknote(BanknoteDenomination banknoteDenomination, int count) {
+    synchronized void addBanknote(BanknoteDenomination banknoteDenomination, int count) {
         cells.computeIfPresent(banknoteDenomination, (k, v) -> v += count);
     }
 
@@ -25,24 +27,28 @@ public class ATM {
     }
 
     public Map<BanknoteDenomination, Integer> withdraw(int amount) throws ATMException {
-        if (amount < 0){
-            throw new ATMException("Illegal amount: " + amount);
-        } else {
-            return new HashMap<>();
+        synchronized (lock) {
+            if (amount < 0) {
+                throw new ATMException("Illegal amount: " + amount);
+            } else {
+                return new HashMap<>();
+            }
         }
     }
 
     public int withdrawAll() {
-        int resultAmount = 0;
-        for (Map.Entry<BanknoteDenomination, Integer> withdrawEntry : cells.entrySet()) {
-            int count = withdrawEntry.getValue();
-            if (count > 0) {
-                BanknoteDenomination banknoteDenomination = withdrawEntry.getKey();
-                resultAmount += cells.get(banknoteDenomination) * banknoteDenomination.getPar();
+        synchronized (lock) {
+            int resultAmount = 0;
+            for (Map.Entry<BanknoteDenomination, Integer> withdrawEntry : cells.entrySet()) {
+                int count = withdrawEntry.getValue();
+                if (count > 0) {
+                    BanknoteDenomination banknoteDenomination = withdrawEntry.getKey();
+                    resultAmount += cells.get(banknoteDenomination) * banknoteDenomination.getPar();
+                }
             }
+            initToZeroCells();
+            return resultAmount;
         }
-        initToZeroCells();
-        return resultAmount;
     }
 
     private void initBillCells() {
