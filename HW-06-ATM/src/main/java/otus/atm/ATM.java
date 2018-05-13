@@ -1,66 +1,59 @@
 package otus.atm;
 
 import otus.atm.exception.ATMException;
-import otus.atm.exception.BillCellException;
 
 import java.util.*;
 
 public class ATM {
-    private final Map<BanknoteDenomination, BillCell> billCells = new HashMap<>();
-
-    private final Map<BanknoteDenomination, Integer> banknoteCountMap = new HashMap<>();
+    private final Map<BanknoteDenomination, Integer> cells = new HashMap<>();
     private final List<BanknoteDenomination> withdrawOrder = new ArrayList<>();
 
     public ATM() {
         initBillCells();
     }
 
-    BillCell getBillCell(BanknoteDenomination banknoteDenomination) {
-        return billCells.get(banknoteDenomination);
+    void addBanknote(BanknoteDenomination banknoteDenomination, int count) {
+        cells.computeIfPresent(banknoteDenomination, (k, v) -> v += count);
     }
 
-    void addBanknote(BanknoteDenomination banknoteDenomination, int count) throws BillCellException {
-        billCells.get(banknoteDenomination).addSeveralBanknotes(count);
-        banknoteCountMap.computeIfPresent(banknoteDenomination, (k, v) -> v += count);
-    }
-
-    public void addBanknote(BanknoteDenomination banknoteDenomination) throws BillCellException {
+    public void addBanknote(BanknoteDenomination banknoteDenomination) {
         addBanknote(banknoteDenomination, 1);
     }
 
-    public int withdraw(int amount) throws ATMException {
+    int getBanknoteCountInCell(BanknoteDenomination banknoteDenomination) {
+        return cells.get(banknoteDenomination);
+    }
+
+    public Map<BanknoteDenomination, Integer> withdraw(int amount) throws ATMException {
         if (amount < 0){
             throw new ATMException("Illegal amount: " + amount);
         } else {
-            return 0;
+            return new HashMap<>();
         }
     }
 
-    public int withdrawAll() throws BillCellException {
+    public int withdrawAll() {
         int resultAmount = 0;
-        for (Map.Entry<BanknoteDenomination, Integer> withdrawEntry : banknoteCountMap.entrySet()) {
+        for (Map.Entry<BanknoteDenomination, Integer> withdrawEntry : cells.entrySet()) {
             int count = withdrawEntry.getValue();
             if (count > 0) {
                 BanknoteDenomination banknoteDenomination = withdrawEntry.getKey();
-                resultAmount += billCells.get(banknoteDenomination).withdrawBanknotes(count) * banknoteDenomination.getPar();
+                resultAmount += cells.get(banknoteDenomination) * banknoteDenomination.getPar();
             }
         }
-        initToZeroBanknoteCountMap();
+        initToZeroCells();
         return resultAmount;
     }
 
-    private void initToZeroBanknoteCountMap() {
-        for (BanknoteDenomination banknoteDenomination : BanknoteDenomination.values()) {
-            banknoteCountMap.put(banknoteDenomination, 0);
-        }
+    private void initBillCells() {
+        withdrawOrder.addAll(Arrays.asList(BanknoteDenomination.values()));
+        withdrawOrder.sort(Comparator.comparingInt(BanknoteDenomination::getPar));
+        initToZeroCells();
     }
 
-    private void initBillCells() {
+    private void initToZeroCells() {
         for (BanknoteDenomination banknoteDenomination : BanknoteDenomination.values()) {
-            billCells.put(banknoteDenomination, new BillCell(banknoteDenomination));
-            withdrawOrder.add(banknoteDenomination);
+            cells.put(banknoteDenomination, 0);
         }
-        initToZeroBanknoteCountMap();
-        withdrawOrder.sort(Comparator.comparingInt(BanknoteDenomination::getPar));
     }
 }
