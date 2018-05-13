@@ -16,14 +16,14 @@ public class ATMTest {
     }
 
     @Test
-    public void atmInitTest() {
+    public void testAtmInit() {
         for (BanknoteDenomination banknoteDenomination : BanknoteDenomination.values()) {
             Assert.assertEquals(banknoteDenomination, atm.getBillCell(banknoteDenomination).getBanknoteDenomination());
         }
     }
 
     @Test
-    public void addBanknote() throws BillCellException {
+    public void testAddBanknote() throws BillCellException {
         atm.addBanknote(BanknoteDenomination.ONE);
         atm.addBanknote(BanknoteDenomination.ONE);
         Assert.assertEquals(2, atm.getBillCell(BanknoteDenomination.ONE).getBanknoteCount());
@@ -35,7 +35,7 @@ public class ATMTest {
     }
 
     @Test
-    public void withdraw() throws BillCellException, ATMException {
+    public void testWithdraw() throws BillCellException, ATMException {
         atm.addBanknote(BanknoteDenomination.ONE, 10);
         atm.addBanknote(BanknoteDenomination.FIVE, 10);
         atm.addBanknote(BanknoteDenomination.TEN, 10);
@@ -44,15 +44,15 @@ public class ATMTest {
         atm.withdraw(15);
     }
 
-    @Test
-    public void withdrawNegativeAmount() throws BillCellException, ATMException {
+    @Test(expected = ATMException.class)
+    public void testWithdrawNegativeAmount() throws BillCellException, ATMException {
         atm.addBanknote(BanknoteDenomination.ONE, 10);
 
         atm.withdraw(-1);
     }
 
     @Test
-    public void withdrawAll() throws BillCellException {
+    public void testWithdrawAll() throws BillCellException {
         atm.addBanknote(BanknoteDenomination.ONE, 10);
         atm.addBanknote(BanknoteDenomination.FIVE, 10);
         atm.addBanknote(BanknoteDenomination.TEN, 10);
