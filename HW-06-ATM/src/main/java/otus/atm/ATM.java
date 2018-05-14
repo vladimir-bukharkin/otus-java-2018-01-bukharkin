@@ -91,4 +91,11 @@ public class ATM {
             cells.put(banknoteDenomination, 0);
         }
     }
+
+    @Override
+    public String toString() {
+        return "ATM{" +
+                "cells=" + cells +
+                '}';
+    }
 }
