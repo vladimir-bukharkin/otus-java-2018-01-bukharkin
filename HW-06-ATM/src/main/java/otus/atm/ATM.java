@@ -1,6 +1,7 @@
 package otus.atm;
 
 import otus.atm.exception.ATMException;
+import otus.atm.util.ATMUtil;
 
 import java.util.*;
 
@@ -29,11 +30,15 @@ public class ATM {
     public Map<BanknoteDenomination, Integer> withdraw(int amount) throws ATMException {
         synchronized (this) {
             if (amount < 0) {
-                throw new ATMException("Illegal amount: " + amount);
+                throw new ATMException("Error: Illegal amount: " + amount);
             } else {
                 return withdrawBySuperGridAlgorithm(amount);
             }
         }
+    }
+
+    public int getTotalBalance() {
+        return ATMUtil.getAmountOfBanknotesSet(cells);
     }
 
     private Map<BanknoteDenomination, Integer> withdrawBySuperGridAlgorithm(int amount) throws ATMException {
@@ -56,7 +61,7 @@ public class ATM {
             result.forEach((k, v) -> cells.computeIfPresent(k, (k2, v2) -> v2 -= v));
             return result;
         } else {
-            throw new ATMException("Not enough money");
+            throw new ATMException("Error: Not enough money");
         }
     }
 
@@ -65,18 +70,11 @@ public class ATM {
     }
 
 
-    public int withdrawAll() {
+    public Map<BanknoteDenomination, Integer> withdrawAll() {
         synchronized (this) {
-            int resultAmount = 0;
-            for (Map.Entry<BanknoteDenomination, Integer> withdrawEntry : cells.entrySet()) {
-                int count = withdrawEntry.getValue();
-                if (count > 0) {
-                    BanknoteDenomination banknoteDenomination = withdrawEntry.getKey();
-                    resultAmount += cells.get(banknoteDenomination) * banknoteDenomination.getPar();
-                }
-            }
+            Map<BanknoteDenomination, Integer> result = new HashMap<>(cells);
             initToZeroCells();
-            return resultAmount;
+            return result;
         }
     }
 

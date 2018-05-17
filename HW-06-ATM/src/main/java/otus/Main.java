@@ -2,21 +2,23 @@ package otus;
 
 import otus.atm.ATM;
 import otus.atm.BanknoteDenomination;
-import otus.atm.exception.ATMException;
+import otus.terminal.ATMTerminal;
 
 public class Main {
-    public static void main(String[] args) throws ATMException {
-        ATM atm = new ATM();
-        // Банкомат принимает по одной банкноте
-        atm.addBanknote(BanknoteDenomination.ONE);
-        atm.addBanknote(BanknoteDenomination.ONE);
-        atm.addBanknote(BanknoteDenomination.ONE);
-        atm.addBanknote(BanknoteDenomination.FIVE);
-        atm.addBanknote(BanknoteDenomination.FIFTY);
-        atm.addBanknote(BanknoteDenomination.TEN);
-        atm.addBanknote(BanknoteDenomination.TEN);
+    public static void main(String[] args) throws Exception {
 
-        atm.withdraw(23);
-        atm.withdrawAll();
+        ATM atm = new ATM();
+
+//        atm.addBanknote(BanknoteDenomination.ONE);
+//        atm.addBanknote(BanknoteDenomination.ONE);
+//        atm.addBanknote(BanknoteDenomination.ONE);
+//        atm.addBanknote(BanknoteDenomination.FIVE);
+//        atm.addBanknote(BanknoteDenomination.FIFTY);
+//        atm.addBanknote(BanknoteDenomination.TEN);
+//        atm.addBanknote(BanknoteDenomination.TEN);
+
+        try (ATMTerminal atmTerminal = new ATMTerminal(atm, System.out, System.in)) {
+            atmTerminal.run();
+        }
     }
 }

@@ -15,4 +15,12 @@ public enum BanknoteDenomination {
     public int getPar() {
         return par;
     }
+
+    public static BanknoteDenomination getBanknoteDenomination(String den) {
+        for (BanknoteDenomination b : BanknoteDenomination.values()) {
+            if (b.toString().equals(den))
+                return b;
+        }
+        return null;
+    }
 }

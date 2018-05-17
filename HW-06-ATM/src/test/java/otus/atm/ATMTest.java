@@ -81,7 +81,14 @@ public class ATMTest {
         atm.addBanknote(BanknoteDenomination.TEN, 10);
         atm.addBanknote(BanknoteDenomination.FIFTY, 10);
 
-        Assert.assertEquals(10 + 10*5 + 10*10 + 10*50, atm.withdrawAll());
+        Map<BanknoteDenomination, Integer> expected = new HashMap<BanknoteDenomination, Integer>() {{
+            put(BanknoteDenomination.ONE, 10);
+            put(BanknoteDenomination.FIVE, 10);
+            put(BanknoteDenomination.TEN, 10);
+            put(BanknoteDenomination.FIFTY, 10);
+        }};
+
+        Assert.assertEquals(expected, atm.withdrawAll());
 
         for (BanknoteDenomination banknoteDenomination : BanknoteDenomination.values()) {
             Assert.assertEquals(0, atm.getBanknoteCountInCell(banknoteDenomination));

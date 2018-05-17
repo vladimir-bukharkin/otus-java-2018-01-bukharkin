@@ -2,43 +2,60 @@ package otus.terminal;
 
 import otus.atm.ATM;
 import otus.terminal.command.ATMCommand;
-import otus.terminal.command.PutBanknoteCommand;
-import otus.terminal.command.WithdrawAllCommand;
-import otus.terminal.command.WithdrawCommand;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
+import java.io.*;
 import java.util.Map;
 import java.util.Scanner;
 
-public class ATMTerminal implements AutoCloseable {
+public class ATMTerminal implements AutoCloseable{
 
-    private final Scanner scanner;
     private final Map<String, ATMCommand> availableCommands;
     private final ATM atm;
 
-    public ATMTerminal(InputStream inputStream, OutputStream outputStream, ATM atm) {
-        scanner = new Scanner(inputStream);
-        this.atm = atm;
+    private final Scanner scanner;
+    private final Writer writer;
+
+
+    public ATMTerminal(ATM atm, OutputStream out, InputStream in) {
+        scanner = new Scanner(in);
+        writer = new OutputStreamWriter(out);
         availableCommands = ATMCommand.getAvailableCommands();
+        this.atm = atm;
     }
 
-    public void run(ATMTerminal atmTerminal) {
-
-        Scanner scanIn = new Scanner(System.in);
-
+    public void run() throws IOException {
+        printHelloMessage();
         while (true) {
-            String inputString = scanIn.nextLine();
+            String inputString = scanner.nextLine();
             if (availableCommands.containsKey(inputString)) {
                 availableCommands.get(inputString).execute(this, atm);
+            } else if (inputString.equals(ATMCommand.COMMAND_CLOSE)) {
+                break;
             }
         }
     }
 
-    @Override
-    public void close() {
-        scanner.close();
+    private void printHelloMessage() throws IOException {
+        writer.append("Введите одну из следующих доступных комманд:\n   ")
+                .append(ATMCommand.COMMAND_PUT_BANKNOTE).append(" - Чтобы положить наличные на счет\n   ")
+                .append(ATMCommand.COMMAND_WITHDRAW).append(" - Для снятия наличных\n   ")
+                .append(ATMCommand.COMMAND_WITHDRAW_ALL).append(" - Для снятия всех наличных\n   ")
+                .append(ATMCommand.COMMAND_CLOSE).append(" - Для закрытия терминала\n\n")
+                .append(" > ")
+                .flush();
+    }
 
+    public void printlnToTerminal(String s) throws IOException {
+        writer.append(s).append("\n\n").append(" > ").flush();
+    }
+
+    public String readLineFromTerminal() {
+        return scanner.nextLine();
+    }
+
+    @Override
+    public void close() throws Exception {
+        scanner.close();
+        writer.close();
     }
 }
