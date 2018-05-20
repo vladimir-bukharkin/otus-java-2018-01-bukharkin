@@ -1,6 +1,6 @@
 package otus.terminal;
 
-import otus.atm.ATM;
+import otus.atm.ATMImpl;
 import otus.terminal.command.ATMCommand;
 
 import java.io.*;
@@ -10,13 +10,13 @@ import java.util.Scanner;
 public class ATMTerminal implements AutoCloseable{
 
     private final Map<String, ATMCommand> availableCommands;
-    private final ATM atm;
+    private final ATMImpl atm;
 
     private final Scanner scanner;
     private final Writer writer;
 
 
-    public ATMTerminal(ATM atm, OutputStream out, InputStream in) {
+    public ATMTerminal(ATMImpl atm, OutputStream out, InputStream in) {
         scanner = new Scanner(in);
         writer = new OutputStreamWriter(out);
         availableCommands = ATMCommand.getAvailableCommands();

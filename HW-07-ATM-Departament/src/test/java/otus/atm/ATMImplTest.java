@@ -8,22 +8,22 @@ import otus.atm.exception.ATMException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ATMTest {
+public class ATMImplTest {
 
-    private ATM atm;
+    private ATMImpl atm;
 
     @Before
     public void setUp() {
-        atm = new ATM();
+        atm = new ATMImpl();
     }
 
     @Test
-    public void testAddBanknote() {
-        atm.addBanknote(BanknoteDenomination.ONE);
-        atm.addBanknote(BanknoteDenomination.ONE);
+    public void testPutBanknote() {
+        atm.putBanknote(BanknoteDenomination.ONE);
+        atm.putBanknote(BanknoteDenomination.ONE);
         Assert.assertEquals(2, atm.getBanknoteCountInCell(BanknoteDenomination.ONE));
         
-        atm.addBanknote(BanknoteDenomination.FIVE);
+        atm.putBanknote(BanknoteDenomination.FIVE);
         Assert.assertEquals(1, atm.getBanknoteCountInCell(BanknoteDenomination.FIVE));
         Assert.assertEquals(0, atm.getBanknoteCountInCell(BanknoteDenomination.TEN));
         Assert.assertEquals(0, atm.getBanknoteCountInCell(BanknoteDenomination.FIFTY));
@@ -31,10 +31,10 @@ public class ATMTest {
 
     @Test
     public void testWithdraw() throws ATMException {
-        atm.addBanknote(BanknoteDenomination.ONE, 10);
-        atm.addBanknote(BanknoteDenomination.FIVE, 10);
-        atm.addBanknote(BanknoteDenomination.TEN, 10);
-        atm.addBanknote(BanknoteDenomination.FIFTY, 10);
+        atm.putBanknote(BanknoteDenomination.ONE, 10);
+        atm.putBanknote(BanknoteDenomination.FIVE, 10);
+        atm.putBanknote(BanknoteDenomination.TEN, 10);
+        atm.putBanknote(BanknoteDenomination.FIFTY, 10);
 
         atm.withdraw(0);
 
@@ -50,14 +50,14 @@ public class ATMTest {
             put(BanknoteDenomination.TEN, 9);
             put(BanknoteDenomination.FIFTY, 10);
         }};
-        Assert.assertEquals(expectedRemain, atm.getBanknoteCellBalance());
+        Assert.assertEquals(expectedRemain, atm.getBanknoteCellsBalance());
     }
 
     @Test(expected = ATMException.class)
     public void testWithdrawThrowNotEnoughMoneyException() throws ATMException {
-        atm.addBanknote(BanknoteDenomination.FIVE, 10);
-        atm.addBanknote(BanknoteDenomination.TEN, 10);
-        atm.addBanknote(BanknoteDenomination.FIFTY, 10);
+        atm.putBanknote(BanknoteDenomination.FIVE, 10);
+        atm.putBanknote(BanknoteDenomination.TEN, 10);
+        atm.putBanknote(BanknoteDenomination.FIFTY, 10);
         atm.withdraw(16);
     }
 
@@ -69,17 +69,17 @@ public class ATMTest {
 
     @Test(expected = ATMException.class)
     public void testWithdrawNegativeAmount() throws ATMException {
-        atm.addBanknote(BanknoteDenomination.ONE, 10);
+        atm.putBanknote(BanknoteDenomination.ONE, 10);
 
         atm.withdraw(-1);
     }
 
     @Test
     public void testWithdrawAll() {
-        atm.addBanknote(BanknoteDenomination.ONE, 10);
-        atm.addBanknote(BanknoteDenomination.FIVE, 10);
-        atm.addBanknote(BanknoteDenomination.TEN, 10);
-        atm.addBanknote(BanknoteDenomination.FIFTY, 10);
+        atm.putBanknote(BanknoteDenomination.ONE, 10);
+        atm.putBanknote(BanknoteDenomination.FIVE, 10);
+        atm.putBanknote(BanknoteDenomination.TEN, 10);
+        atm.putBanknote(BanknoteDenomination.FIFTY, 10);
 
         Map<BanknoteDenomination, Integer> expected = new HashMap<BanknoteDenomination, Integer>() {{
             put(BanknoteDenomination.ONE, 10);
@@ -93,5 +93,21 @@ public class ATMTest {
         for (BanknoteDenomination banknoteDenomination : BanknoteDenomination.values()) {
             Assert.assertEquals(0, atm.getBanknoteCountInCell(banknoteDenomination));
         }
+    }
+
+    @Test
+    public void testRestoreATMInitState() {
+        atm.putBanknote(BanknoteDenomination.ONE, 10);
+        atm.putBanknote(BanknoteDenomination.FIVE, 10);
+
+        Map<BanknoteDenomination, Integer> expected = new HashMap<BanknoteDenomination, Integer>() {{
+            put(BanknoteDenomination.ONE, 0);
+            put(BanknoteDenomination.FIVE, 0);
+            put(BanknoteDenomination.TEN, 0);
+            put(BanknoteDenomination.FIFTY, 0);
+        }};
+
+        atm.restoreInitialATMState();
+        Assert.assertEquals(expected, atm.getBanknoteCellsBalance());
     }
 }

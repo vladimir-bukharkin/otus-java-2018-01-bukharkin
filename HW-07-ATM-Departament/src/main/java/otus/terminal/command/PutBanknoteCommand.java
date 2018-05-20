@@ -1,6 +1,6 @@
 package otus.terminal.command;
 
-import otus.atm.ATM;
+import otus.atm.ATMImpl;
 import otus.atm.BanknoteDenomination;
 import otus.terminal.ATMTerminal;
 
@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class PutBanknoteCommand implements ATMCommand {
 
     @Override
-    public void execute(ATMTerminal terminal, ATM atm) throws IOException {
+    public void execute(ATMTerminal terminal, ATMImpl atm) throws IOException {
         terminal.printlnToTerminal("Введите один из доступных номиналов банкнот: " +
                 Arrays.toString(BanknoteDenomination.values()));
 
@@ -19,7 +19,7 @@ public class PutBanknoteCommand implements ATMCommand {
         if (banknoteDenomination == null) {
             terminal.printlnToTerminal("Error: incorrect banknote denomination");
         } else {
-            atm.addBanknote(banknoteDenomination);
+            atm.putBanknote(banknoteDenomination);
             terminal.printlnToTerminal("Ок... банконта была добавлена\n" +
                     "Total balance: " + atm.getTotalBalance() +
                     "\nTotal banknote Balance: " + atm.toString());

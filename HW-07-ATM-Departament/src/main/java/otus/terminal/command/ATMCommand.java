@@ -1,12 +1,10 @@
 package otus.terminal.command;
 
-import otus.atm.ATM;
+import otus.atm.ATMImpl;
 import otus.terminal.ATMTerminal;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public interface ATMCommand {
@@ -24,5 +22,5 @@ public interface ATMCommand {
         }};
     }
 
-    void execute(ATMTerminal terminal, ATM atm) throws IOException;
+    void execute(ATMTerminal terminal, ATMImpl atm) throws IOException;
 }
