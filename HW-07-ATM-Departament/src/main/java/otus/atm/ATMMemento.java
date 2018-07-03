@@ -1,13 +1,13 @@
 package otus.atm;
 
 class ATMMemento {
-    private final ATMImpl atm;
+    private final ATMType1 atm;
 
-    ATMMemento(ATMImpl atm) {
+    ATMMemento(ATMType1 atm) {
         this.atm = atm;
     }
 
-    ATMImpl getSavedState() {
+    ATMType1 getSavedState() {
         return atm;
     }
 }

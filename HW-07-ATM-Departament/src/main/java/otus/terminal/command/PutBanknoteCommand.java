@@ -1,6 +1,6 @@
 package otus.terminal.command;
 
-import otus.atm.ATMImpl;
+import otus.atm.ATMType1;
 import otus.atm.BanknoteDenomination;
 import otus.terminal.ATMTerminal;
 
@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class PutBanknoteCommand implements ATMCommand {
 
     @Override
-    public void execute(ATMTerminal terminal, ATMImpl atm) throws IOException {
+    public void execute(ATMTerminal terminal, ATMType1 atm) throws IOException {
         terminal.printlnToTerminal("Введите один из доступных номиналов банкнот: " +
                 Arrays.toString(BanknoteDenomination.values()));
 

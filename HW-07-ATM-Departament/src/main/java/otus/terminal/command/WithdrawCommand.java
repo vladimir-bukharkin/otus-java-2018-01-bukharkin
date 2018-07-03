@@ -1,6 +1,6 @@
 package otus.terminal.command;
 
-import otus.atm.ATMImpl;
+import otus.atm.ATMType1;
 import otus.atm.BanknoteDenomination;
 import otus.atm.exception.ATMException;
 import otus.terminal.ATMTerminal;
@@ -11,7 +11,7 @@ import java.util.Map;
 public class WithdrawCommand implements ATMCommand {
 
     @Override
-    public void execute(ATMTerminal terminal, ATMImpl atm) throws IOException {
+    public void execute(ATMTerminal terminal, ATMType1 atm) throws IOException {
         terminal.printlnToTerminal("Введите сумму: ");
 
         String in = terminal.readLineFromTerminal();

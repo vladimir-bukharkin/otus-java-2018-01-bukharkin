@@ -10,11 +10,11 @@ import java.util.Map;
 
 public class ATMImplTest {
 
-    private ATMImpl atm;
+    private ATMType1 atm;
 
     @Before
     public void setUp() {
-        atm = new ATMImpl();
+        atm = new ATMType1();
     }
 
     @Test

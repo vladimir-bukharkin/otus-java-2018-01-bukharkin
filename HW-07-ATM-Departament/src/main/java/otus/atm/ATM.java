@@ -1,10 +1,11 @@
 package otus.atm;
 
 import otus.atm.exception.ATMException;
+import otus.atm.visitor.ATMComponent;
 
 import java.util.Map;
 
-public interface ATM {
+public interface ATM extends ATMComponent {
 
     public void putBanknote(BanknoteDenomination banknoteDenomination);
 

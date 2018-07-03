@@ -2,37 +2,38 @@ package otus.atm;
 
 import otus.atm.exception.ATMException;
 import otus.atm.util.ATMUtil;
+import otus.atm.visitor.Visitor;
 
 import java.util.*;
 
-public class ATMImpl implements ATM {
+public class ATMType1 implements ATM {
 
     private final Map<BanknoteDenomination, Integer> cells = new HashMap<>();
     private final List<BanknoteDenomination> withdrawOrder = new ArrayList<>();
     private final ATMMemento initialState;
 
-    public ATMImpl(Map<BanknoteDenomination, Integer> cells) {
+    public ATMType1(Map<BanknoteDenomination, Integer> cells) {
         this.cells.putAll(cells);
         withdrawOrder.addAll(cells.keySet());
         withdrawOrder.sort(Comparator.comparingInt(BanknoteDenomination::getPar).reversed());
-        initialState = new ATMMemento(new ATMImpl(this));
+        initialState = new ATMMemento(new ATMType1(this));
     }
 
-    public ATMImpl() {
+    public ATMType1() {
         withdrawOrder.addAll(Arrays.asList(BanknoteDenomination.values()));
         initToZeroCells();
         withdrawOrder.sort(Comparator.comparingInt(BanknoteDenomination::getPar).reversed());
-        initialState = new ATMMemento(new ATMImpl(this));
+        initialState = new ATMMemento(new ATMType1(this));
     }
 
-    private ATMImpl(ATMImpl cloned) {
+    private ATMType1(ATMType1 cloned) {
         this.cells.putAll(cloned.cells);
         this.withdrawOrder.addAll(cloned.withdrawOrder);
         this.initialState = cloned.initialState;
     }
 
     public void restoreInitialATMState() {
-        ATMImpl initStateAtm = initialState.getSavedState();
+        ATMType1 initStateAtm = initialState.getSavedState();
         cells.clear();
         cells.putAll(initStateAtm.cells);
         withdrawOrder.clear();
@@ -113,8 +114,13 @@ public class ATMImpl implements ATM {
 
     @Override
     public String toString() {
-        return "ATMImpl{" +
+        return "ATMType1{" +
                 "cells=" + cells +
                 '}';
+    }
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 }
