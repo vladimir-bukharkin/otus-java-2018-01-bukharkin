@@ -12,19 +12,31 @@ public class ATMImpl implements ATM {
     private final ATMMemento initialState;
 
     public ATMImpl(Map<BanknoteDenomination, Integer> cells) {
-        if (cells == null) {
-            withdrawOrder.addAll(Arrays.asList(BanknoteDenomination.values()));
-            initToZeroCells();
-        } else {
-            this.cells.putAll(cells);
-            withdrawOrder.addAll(cells.keySet());
-        }
+        this.cells.putAll(cells);
+        withdrawOrder.addAll(cells.keySet());
         withdrawOrder.sort(Comparator.comparingInt(BanknoteDenomination::getPar).reversed());
-        initialState = new ATMMemento(this.cells);
+        initialState = new ATMMemento(new ATMImpl(this));
     }
 
     public ATMImpl() {
-        this(null);
+        withdrawOrder.addAll(Arrays.asList(BanknoteDenomination.values()));
+        initToZeroCells();
+        withdrawOrder.sort(Comparator.comparingInt(BanknoteDenomination::getPar).reversed());
+        initialState = new ATMMemento(new ATMImpl(this));
+    }
+
+    private ATMImpl(ATMImpl cloned) {
+        this.cells.putAll(cloned.cells);
+        this.withdrawOrder.addAll(cloned.withdrawOrder);
+        this.initialState = cloned.initialState;
+    }
+
+    public void restoreInitialATMState() {
+        ATMImpl initStateAtm = initialState.getSavedState();
+        cells.clear();
+        cells.putAll(initStateAtm.cells);
+        withdrawOrder.clear();
+        withdrawOrder.addAll(initStateAtm.withdrawOrder);
     }
 
     public void putBanknote(BanknoteDenomination banknoteDenomination) {
@@ -56,12 +68,6 @@ public class ATMImpl implements ATM {
             return result;
         }
     }
-
-    public void restoreInitialATMState() {
-        cells.clear();
-        cells.putAll(initialState.getSavedState());
-    }
-
 
     void putBanknote(BanknoteDenomination banknoteDenomination, int count) {
         synchronized (this) {

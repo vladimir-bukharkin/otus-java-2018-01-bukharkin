@@ -1,16 +1,13 @@
 package otus.atm;
 
-import java.util.HashMap;
-import java.util.Map;
-
 class ATMMemento {
-    private final Map<BanknoteDenomination, Integer> cells;
+    private final ATMImpl atm;
 
-    ATMMemento(Map<BanknoteDenomination, Integer> cells) {
-        this.cells = new HashMap<>(cells);
+    ATMMemento(ATMImpl atm) {
+        this.atm = atm;
     }
 
-    Map<BanknoteDenomination, Integer> getSavedState() {
-        return cells;
+    ATMImpl getSavedState() {
+        return atm;
     }
 }
