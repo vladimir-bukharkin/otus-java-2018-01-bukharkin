@@ -21,11 +21,11 @@ public class Executor {
     }
 
     public  <T extends DataSet> void save(T dataSetObj) {
-//        execUpdate(INSERT_INTO_USER, statement -> {
-//            statement.setString(1, "sdg");
-//            statement.setInt(2, 2);
-//            statement.execute();
-//        });
+        execUpdate(SqlBuilder.insertObject(dataSetObj), statement -> {
+            statement.setString(1, "sdg");
+            statement.setInt(2, 2);
+            statement.execute();
+        });
     }
 
     private <T extends DataSet> void load(long id, Class<T> clazz) {

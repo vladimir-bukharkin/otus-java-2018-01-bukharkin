@@ -1,22 +1,42 @@
 package orm.ormframework;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 class SqlBuilder {
 
     static String createTable(Class<? extends DataSet> clazz) {
-        String tableName = clazz.getSimpleName().replace("DataSet", "").toLowerCase();
+        String tableName = getTableNameFromClass(clazz);
+        String fields = Arrays.stream(clazz.getDeclaredFields())
+                .map(TableField::new)
+                .map(TableField::toString)
+                .collect(Collectors.joining(", "));
 
         return  "create table if not exists " + tableName +
-                " (id integer primary key AUTOINCREMENT not NULL, " +
-                Arrays.stream(clazz.getDeclaredFields())
-                        .map(TableField::new)
-                        .map(TableField::toString).collect(Collectors.joining(", ")) +
+                " (id integer primary key AUTOINCREMENT not NULL" +
+                (fields.isEmpty() ? "" : ", " + fields) + ")";
+    }
+
+    static <T extends DataSet> String insertObject(T dataSetObj) {
+        String tableName = getTableNameFromClass(dataSetObj.getClass());
+        List<String> attributes = new ArrayList<>();
+        Arrays.stream(dataSetObj.getClass().getDeclaredFields()).forEach(field -> {
+            attributes.add(field.getName());
+        });
+
+        return "insert into " + tableName + " (" +
+                attributes.stream().collect(Collectors.joining(", ")) +
+                ") values(" +
+                attributes.stream().map(a -> " ?").collect(Collectors.joining(", ")) +
                 ")";
     }
 
+    private static String getTableNameFromClass(Class<? extends DataSet> clazz) {
+        return clazz.getSimpleName().replace("DataSet", "").toLowerCase();
+    }
 
     private static class TableField {
         private final String name;
