@@ -1,9 +1,7 @@
 package orm.ormframework;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 class SqlBuilder {
@@ -15,26 +13,22 @@ class SqlBuilder {
                 .map(TableField::toString)
                 .collect(Collectors.joining(", "));
 
-        return  "create table if not exists " + tableName +
+        return  "CREATE TABLE IF NOT EXISTS " + tableName +
                 " (id integer primary key AUTOINCREMENT not NULL" +
                 (fields.isEmpty() ? "" : ", " + fields) + ")";
     }
 
-    static <T extends DataSet> String insertObject(T dataSetObj) {
-        String tableName = getTableNameFromClass(dataSetObj.getClass());
-        List<String> attributes = new ArrayList<>();
-        Arrays.stream(dataSetObj.getClass().getDeclaredFields()).forEach(field -> {
-            attributes.add(field.getName());
-        });
-
-        return "insert into " + tableName + " (" +
-                attributes.stream().collect(Collectors.joining(", ")) +
-                ") values(" +
-                attributes.stream().map(a -> " ?").collect(Collectors.joining(", ")) +
-                ")";
+    static String dropTableIfExist(Class<? extends DataSet> clazz) {
+        String tableName = getTableNameFromClass(clazz);
+        return  "DROP TABLE IF EXISTS " + tableName;
     }
 
-    private static String getTableNameFromClass(Class<? extends DataSet> clazz) {
+    static String loadObject(long id, Class<? extends DataSet> clazz) {
+        String tableName = getTableNameFromClass(clazz);
+        return  "SELECT * FROM " + tableName + " WHERE id = " + id;
+    }
+
+    public static String getTableNameFromClass(Class<? extends DataSet> clazz) {
         return clazz.getSimpleName().replace("DataSet", "").toLowerCase();
     }
 

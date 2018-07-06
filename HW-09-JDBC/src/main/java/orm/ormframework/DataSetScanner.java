@@ -10,7 +10,7 @@ class DataSetScanner {
 
     @SuppressWarnings("unchecked")
     static Set<Class<? extends DataSet>> findAll(String packageName) throws IOException {
-        return ClassScanner.getClassesInPackage("orm")
+        return ClassScanner.getClassesInPackage(packageName)
                 .stream()
                 .filter(c -> DataSet.class.isAssignableFrom(c) && c != DataSet.class)
                 .map(c -> (Class<? extends DataSet>) c)
@@ -18,6 +18,6 @@ class DataSetScanner {
     }
 
     static Set<Class<? extends DataSet>> findAll() throws IOException {
-        return findAll(null);
+        return findAll("orm");
     }
 }

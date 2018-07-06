@@ -2,6 +2,8 @@ package orm.testdatasets;
 
 import orm.ormframework.DataSet;
 
+import java.util.Objects;
+
 public class TestDataSet2 extends DataSet {
     private final String string;
     private final int vInt;
@@ -15,19 +17,20 @@ public class TestDataSet2 extends DataSet {
         this.vFloat = vFloat;
     }
 
-    public String getString() {
-        return string;
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        TestDataSet2 that = (TestDataSet2) object;
+        return vInt == that.vInt &&
+                Float.compare(that.vFloat, vFloat) == 0 &&
+                Objects.equals(string, that.string) &&
+                Objects.equals(vDouble, that.vDouble);
     }
 
-    public int getvInt() {
-        return vInt;
-    }
-
-    public Double getvDouble() {
-        return vDouble;
-    }
-
-    public float getvFloat() {
-        return vFloat;
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), string, vInt, vDouble, vFloat);
     }
 }

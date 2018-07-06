@@ -7,7 +7,7 @@ public class UserDataSet extends DataSet {
     private final String name;
     private final int age;
 
-    protected UserDataSet(String name, int age) {
+    public UserDataSet(String name, int age) {
         this.name = name;
         this.age = age;
     }

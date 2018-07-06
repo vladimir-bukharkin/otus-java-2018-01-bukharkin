@@ -10,19 +10,16 @@ public class ReflectionHelper {
     private ReflectionHelper() {
     }
 
-    public static <T> T instantiate(Class<T> type, Object... args) {
+    public static <T> T instantiate(Class<T> type, Object[] args, Field... fields) {
         try {
             if (args.length == 0) {
                 return type.getDeclaredConstructor().newInstance();
             } else {
-                Class<?>[] classes = toClasses(args);
-                return type.getDeclaredConstructor(classes).newInstance(args);
+                return type.getDeclaredConstructor(toClasses(fields)).newInstance(args);
             }
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
-        return null;
     }
 
     public static Object getFieldValue(Object object, String name) {
@@ -32,13 +29,12 @@ public class ReflectionHelper {
             field.setAccessible(true);
             return field.get(object);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } finally {
             if (field != null) {
                 field.setAccessible(false);
             }
         }
-        return null;
     }
 
     public static void setFieldValue(Object object, String name, Object value) {
@@ -48,7 +44,22 @@ public class ReflectionHelper {
             field.setAccessible(true);
             field.set(object, value);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
+        } finally {
+            if (field != null) {
+                field.setAccessible(false);
+            }
+        }
+    }
+
+    public static void setParentFieldValue(Object object, String name, Object value) {
+        Field field = null;
+        try {
+            field = object.getClass().getSuperclass().getDeclaredField(name); //getField() for public fields
+            field.setAccessible(true);
+            field.set(object, value);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         } finally {
             if (field != null) {
                 field.setAccessible(false);
@@ -64,13 +75,12 @@ public class ReflectionHelper {
             method.setAccessible(true);
             return method.invoke(object, args);
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } finally {
             if (method != null) {
                 method.setAccessible(false);
             }
         }
-        return null;
     }
 
     public static Object callMethod(Object object, Method method) throws InvocationTargetException {
@@ -78,16 +88,19 @@ public class ReflectionHelper {
             method.setAccessible(true);
             return method.invoke(object);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } finally {
             if (method != null) {
                 method.setAccessible(false);
             }
         }
-        return null;
     }
 
-    static private Class<?>[] toClasses(Object[] args) {
+    private static Class<?>[] toClasses(Object[] args) {
         return Arrays.stream(args).map(Object::getClass).toArray(Class<?>[]::new);
+    }
+
+    private static Class<?>[] toClasses(Field[] fields) {
+        return Arrays.stream(fields).map(Field::getType).toArray(Class<?>[]::new);
     }
 }
