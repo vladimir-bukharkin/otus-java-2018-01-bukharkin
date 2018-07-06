@@ -48,7 +48,7 @@ public class Executor {
         execQuery(SqlBuilder.loadObject(id, clazz), result -> {
             result.next();
             for (Field attribute : attributes) {
-                args.add(getArgFromResult(result, attribute));
+                args.add(getArgFromResultSet(result, attribute));
             }
         });
         T result = ReflectionHelper.instantiate(clazz, args.toArray(), attributes);
@@ -127,7 +127,7 @@ public class Executor {
         }
     }
 
-    private static Object getArgFromResult(ResultSet result, Field field) {
+    private static Object getArgFromResultSet(ResultSet result, Field field) {
         Class clazz = field.getType();
         String fieldName = field.getName();
         try {
