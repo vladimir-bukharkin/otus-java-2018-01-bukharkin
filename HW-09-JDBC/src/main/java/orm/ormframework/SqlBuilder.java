@@ -28,7 +28,7 @@ class SqlBuilder {
         return  "SELECT * FROM " + tableName + " WHERE id = " + id;
     }
 
-    public static String getTableNameFromClass(Class<? extends DataSet> clazz) {
+    static String getTableNameFromClass(Class<? extends DataSet> clazz) {
         return clazz.getSimpleName().replace("DataSet", "").toLowerCase();
     }
 
