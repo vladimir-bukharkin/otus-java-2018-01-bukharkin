@@ -5,6 +5,7 @@ import otus.atm.ATMType1;
 import otus.atm.ATMType2;
 import otus.atm.BanknoteDenomination;
 import otus.atm.departament.Department;
+import otus.terminal.ATMTerminal;
 
 import java.util.HashMap;
 
@@ -15,6 +16,7 @@ public class Main {
             put(BanknoteDenomination.ONE, 10);
             put(BanknoteDenomination.TEN, 10);
         }});
+
         ATM atm2 = new ATMType1(new HashMap<BanknoteDenomination, Integer>() {{
             put(BanknoteDenomination.FIFTY, 1);
             put(BanknoteDenomination.FIVE, 5);
@@ -39,5 +41,9 @@ public class Main {
         department.restoreAllATMInitState();
 
         department.getBalance();
+
+        try (ATMTerminal atmTerminal = new ATMTerminal((ATMType1) atm1, System.out, System.in)) {
+            atmTerminal.run();
+        }
     }
 }
