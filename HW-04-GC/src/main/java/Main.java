@@ -39,7 +39,7 @@ public class Main {
         }
 
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        ObjectName name = new ObjectName("ru.otus:type=Benchmark");
+        ObjectName name = new ObjectName("otus:type=Benchmark");
         Benchmark mbean = new Benchmark();
         mbs.registerMBean(mbean, name);
 

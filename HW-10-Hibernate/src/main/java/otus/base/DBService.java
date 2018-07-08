@@ -1,6 +1,6 @@
 package otus.base;
 
-import ru.otus.base.dataSets.UserDataSet;
+import otus.base.dataSets.UserDataSet;
 
 import java.util.List;
 

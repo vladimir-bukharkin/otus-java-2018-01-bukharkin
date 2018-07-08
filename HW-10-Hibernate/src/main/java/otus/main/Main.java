@@ -1,9 +1,9 @@
 package otus.main;
 
-import ru.otus.base.DBService;
-import ru.otus.base.dataSets.PhoneDataSet;
-import ru.otus.base.dataSets.UserDataSet;
-import ru.otus.dbService.DBServiceImpl;
+import otus.base.DBService;
+import otus.base.dataSets.PhoneDataSet;
+import otus.base.dataSets.UserDataSet;
+import otus.dbService.DBServiceImpl;
 
 import java.util.List;
 

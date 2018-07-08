@@ -6,18 +6,15 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-import ru.otus.base.DBService;
-import ru.otus.base.dataSets.EmptyDataSet;
-import ru.otus.base.dataSets.PhoneDataSet;
-import ru.otus.base.dataSets.UserDataSet;
-import ru.otus.dbService.dao.UserDataSetDAO;
+import otus.base.DBService;
+import otus.base.dataSets.EmptyDataSet;
+import otus.base.dataSets.PhoneDataSet;
+import otus.base.dataSets.UserDataSet;
+import otus.dbService.dao.UserDataSetDAO;
 
 import java.util.List;
 import java.util.function.Function;
 
-/**
- * @author v.chibrikov
- */
 public class DBServiceImpl implements DBService {
     private final SessionFactory sessionFactory;
 
@@ -28,11 +25,9 @@ public class DBServiceImpl implements DBService {
         configuration.addAnnotatedClass(PhoneDataSet.class);
         configuration.addAnnotatedClass(EmptyDataSet.class);
 
-        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
-        configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
-        configuration.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/db_example");
-        configuration.setProperty("hibernate.connection.username", "tully");
-        configuration.setProperty("hibernate.connection.password", "tully");
+        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
+        configuration.setProperty("hibernate.connection.url", "jdbc:h2:C:/Users/bukha/Desktop/ideaProjects/otus/q/HW-10-Hibernate/src/main/resources\\my_db");
         configuration.setProperty("hibernate.show_sql", "true");
         configuration.setProperty("hibernate.hbm2ddl.auto", "create");
         configuration.setProperty("hibernate.connection.useSSL", "false");
